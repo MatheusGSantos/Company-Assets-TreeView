@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "include": ["**/*.ts", "**/*.tsx", ".eslintrc.cjs", ".vite.config.ts"],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "exclude": ["node_modules"]
+}
