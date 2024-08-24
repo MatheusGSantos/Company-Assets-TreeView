@@ -3,7 +3,7 @@ import { tv, VariantProps } from "tailwind-variants";
 
 const button = tv({
   base: [
-    "py-2 px-1.5 text-white rounded-sm flex items-center justify-center gap-2 font-inter font-semibold",
+    "py-1 px-2 text-white rounded-sm flex items-center justify-center gap-2 font-inter font-semibold",
   ],
 
   variants: {
