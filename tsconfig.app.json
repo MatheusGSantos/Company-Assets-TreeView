@@ -27,9 +27,10 @@
       "@hooks/*": ["./hooks/*"],
       "@pages/*": ["./pages/*"],
       "@routes/*": ["./routes/*"],
-      "@services/*": ["./services/*"],
+      "@api/*": ["./api/*"],
       "@styles/*": ["./styles/*"],
-      "@utils/*": ["./utils/*"]
+      "@models/*": ["./models/*"],
+      "@lib/*": ["./lib/*"]
     }
   },
   "include": ["src"]

@@ -1,4 +1,4 @@
-import { ComponentProps } from "react";
+import { ComponentProps, memo } from "react";
 import { tv, VariantProps } from "tailwind-variants";
 
 const button = tv({
@@ -36,22 +36,24 @@ const button = tv({
 export type ButtonProps = ComponentProps<"button"> &
   VariantProps<typeof button>;
 
-export function ToggleButton({
-  color = "primary",
-  disabled = false,
-  toggled = false,
-  className,
-  ...props
-}: ButtonProps) {
-  return (
-    <button
-      {...props}
-      className={button({
-        color,
-        disabled,
-        toggled,
-        className,
-      })}
-    />
-  );
-}
+export const ToggleButton = memo(
+  ({
+    color = "primary",
+    disabled = false,
+    toggled = false,
+    className,
+    ...props
+  }: ButtonProps) => {
+    return (
+      <button
+        {...props}
+        className={button({
+          color,
+          disabled,
+          toggled,
+          className,
+        })}
+      />
+    );
+  }
+);

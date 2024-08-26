@@ -20,7 +20,7 @@ export default {
           lightest: "#E3EAEF",
           light: "#D8DFE6",
           medium: "#88929C",
-          darker: "##77818C",
+          darker: "#77818C",
           darkest: "#24292F",
         },
 
