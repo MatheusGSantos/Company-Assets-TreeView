@@ -80,7 +80,11 @@ export default function Header({
   const companyButtons = useCallback(() => {
     if (!companies) return null;
 
-    return companies.map((company) => (
+    const sortedCompanies = [...companies].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+
+    return sortedCompanies.map((company) => (
       <ToggleButton
         key={company.id}
         className="text-xs"
