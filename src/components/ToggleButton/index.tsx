@@ -9,7 +9,7 @@ const button = tv({
   variants: {
     color: {
       primary: "bg-blue-secondary",
-      ghost: "bg-transparent text-gray-darker",
+      ghost: "bg-transparent text-gray-darker border border-gray-light",
     },
     disabled: {
       true: "opacity-50 pointer-events-none",
@@ -28,7 +28,7 @@ const button = tv({
     {
       color: "ghost",
       toggled: true,
-      class: "bg-blue-primary",
+      class: "bg-blue-primary border-none",
     },
   ],
 });
