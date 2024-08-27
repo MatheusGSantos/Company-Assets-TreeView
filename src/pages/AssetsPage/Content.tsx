@@ -10,6 +10,7 @@ import { getCompanyAssets } from "@api/get-company-assets";
 import { useSearchParams } from "react-router-dom";
 import { Searchbar } from "./components/Searchbar";
 import { twMerge } from "tailwind-merge";
+import { EmptyContent } from "@pages/EmptyContent";
 
 interface ContentProps {
   company: {
@@ -133,7 +134,12 @@ export function Content({ company }: Readonly<ContentProps>) {
         <div className="border border-gray-light rounded-sm flex-1 h-full">
           <Searchbar placeholder="Buscar Ativo ou Local" onChange={() => {}} />
         </div>
-        <div className="border border-gray-light rounded-sm flex-[2] h-full"></div>
+        <div className="border border-gray-light rounded-sm flex-[2] h-full">
+          <EmptyContent
+            message="Selecione um Ativo para visualizar mais detalhes"
+            svgClassName="fill-gray-medium h-20 w-20"
+          />
+        </div>
       </div>
     </>
   );
