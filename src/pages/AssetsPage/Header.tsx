@@ -56,7 +56,7 @@ function RetryButton({
       );
     }
 
-    return <img src={RetryIcon} alt="Unit" className="size-2.5" />;
+    return <RetryIcon className="size-2.5" />;
   };
 
   return (
@@ -94,14 +94,14 @@ export default function Header({
         }}
         toggled={company.id === selectedCompany}
       >
-        <img src={GoldIcon} alt="Unit" /> {`${capitalize(company.name)} Unit`}
+        <GoldIcon /> {`${capitalize(company.name)} Unit`}
       </ToggleButton>
     ));
   }, [companies, setSelectedCompany, selectedCompany]);
 
   return (
     <header className="bg-blue-dark px-4 py-3 flex items-center justify-between">
-      <img src={TractianLogo} alt="Tractian" />
+      <TractianLogo />
       <div className="flex gap-2.5">
         <RetryButton isLoading={isLoading} onClick={refetch} />
         {companyButtons()}

@@ -8,6 +8,8 @@ import ExclamationCircleIcon from "@assets/icons/ExclamationCircle.svg";
 import { getCompanyLocations } from "@api/get-company-locations";
 import { getCompanyAssets } from "@api/get-company-assets";
 import { useSearchParams } from "react-router-dom";
+import { Searchbar } from "./components/Searchbar";
+import { twMerge } from "tailwind-merge";
 
 interface ContentProps {
   company: {
@@ -56,23 +58,35 @@ export function Content({ company }: Readonly<ContentProps>) {
   const toggleSensorType = () => {
     const sensorType = searchParams.get("sensorType");
 
-    if (sensorType === "energy")
+    if (sensorType === "energy") {
       setSearchParams((params) => {
         params.delete("sensorType");
         return params;
       });
-    else setSearchParams((params) => ({ ...params, sensorType: "energy" }));
+    } else {
+      setSearchParams((params) => {
+        const newParams = new URLSearchParams(params);
+        newParams.set("sensorType", "energy");
+        return newParams;
+      });
+    }
   };
 
   const toggleStatus = () => {
     const status = searchParams.get("status");
 
-    if (status === "critical")
+    if (status === "critical") {
       setSearchParams((params) => {
         params.delete("status");
         return params;
       });
-    else setSearchParams((params) => ({ ...params, status: "critical" }));
+    } else {
+      setSearchParams((params) => {
+        const newParams = new URLSearchParams(params);
+        newParams.set("status", "critical");
+        return newParams;
+      });
+    }
   };
 
   return (
@@ -91,7 +105,12 @@ export function Content({ company }: Readonly<ContentProps>) {
             onClick={toggleSensorType}
             className="px-4 py-1.5 text-sm"
           >
-            <img src={ThunderboltIcon} alt="Thunderbolt" className="size-4" />
+            <ThunderboltIcon
+              className={twMerge(
+                "size-4 ghost-toggle-button",
+                searchParams.get("sensorType") === "energy" && "toggled"
+              )}
+            />
             <span>Sensor de Energia</span>
           </ToggleButton>
           <ToggleButton
@@ -100,17 +119,20 @@ export function Content({ company }: Readonly<ContentProps>) {
             onClick={toggleStatus}
             className="px-4 py-1.5 text-sm"
           >
-            <img
-              src={ExclamationCircleIcon}
-              alt="ExclamationCircle"
-              className="size-4"
+            <ExclamationCircleIcon
+              className={twMerge(
+                "size-4 ghost-toggle-button",
+                searchParams.get("status") === "critical" && "toggled"
+              )}
             />
             <span>Crítico</span>
           </ToggleButton>
         </div>
       </header>
       <div className="flex items-center flex-1 gap-2">
-        <div className="border border-gray-light rounded-sm flex-1 h-full"></div>
+        <div className="border border-gray-light rounded-sm flex-1 h-full">
+          <Searchbar placeholder="Buscar Ativo ou Local" onChange={() => {}} />
+        </div>
         <div className="border border-gray-light rounded-sm flex-[2] h-full"></div>
       </div>
     </>

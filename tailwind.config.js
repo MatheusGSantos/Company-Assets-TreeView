@@ -31,6 +31,8 @@ export default {
         green: {
           primary: "#52C41A",
         },
+
+        placeholder: "#C1C9D2",
       },
     },
   },

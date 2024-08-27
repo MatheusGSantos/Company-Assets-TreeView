@@ -28,7 +28,7 @@ const button = tv({
     {
       color: "ghost",
       toggled: true,
-      class: "bg-blue-primary border-none",
+      class: "bg-blue-primary border-none text-white",
     },
   ],
 });
