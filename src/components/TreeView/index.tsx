@@ -5,17 +5,19 @@ import "react-virtualized/styles.css";
 interface TreeViewProps {
   flattenedTree: Map<string, any>[];
   rowRenderer: ListRowRenderer;
+  deduceHeight?: number;
 }
 
 export function TreeView({
   flattenedTree,
   rowRenderer,
+  deduceHeight = 0,
 }: Readonly<TreeViewProps>) {
   return (
     <AutoSizer>
       {({ height, width }) => (
         <List
-          height={height}
+          height={height - deduceHeight}
           rowCount={flattenedTree.length}
           rowHeight={28}
           rowRenderer={rowRenderer}

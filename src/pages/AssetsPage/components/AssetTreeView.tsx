@@ -138,5 +138,11 @@ export function AssetTreeView({
     );
   };
 
-  return <TreeView flattenedTree={flattenedTree} rowRenderer={rowRenderer} />;
+  return (
+    <TreeView
+      flattenedTree={flattenedTree}
+      rowRenderer={rowRenderer}
+      deduceHeight={48}
+    />
+  );
 }
