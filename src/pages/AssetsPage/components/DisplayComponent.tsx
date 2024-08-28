@@ -84,18 +84,18 @@ export function DisplayComponent({ data }: Readonly<DisplayComponentProps>) {
             <h2 className="text-gray-darkest font-inter text-base font-semibold">
               Sensor
             </h2>
-            <p className="mt-2 text-gray-medium font-inter text-base font-normal">
+            <p className="mt-2 text-gray-medium font-inter text-base font-normal flex items-center">
               <SensorIcon className="mr-2" />
-              {data.get("sensorId")}
+              <span>{data.get("sensorId")}</span>
             </p>
           </div>
           <div className="flex-1">
             <h2 className="text-gray-darkest font-inter text-base font-semibold">
               Receptor
             </h2>
-            <p className="mt-2 text-gray-medium font-inter text-base font-normal">
+            <p className="mt-2 text-gray-medium font-inter text-base font-normal flex items-center">
               <GatewayIcon className="mr-2" />
-              {data.get("gatewayId")}
+              <span>{data.get("gatewayId")}</span>
             </p>
           </div>
         </div>
