@@ -11,8 +11,14 @@ import { useSearchParams } from "react-router-dom";
 import { Searchbar } from "./components/Searchbar";
 import { twMerge } from "tailwind-merge";
 import { EmptyContent } from "@pages/EmptyContent";
-import { useCallback, useMemo, useState } from "react";
-import { buildTree, TreeNode, twoPointerSort } from "@lib/utils";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  AssetTree,
+  buildTree,
+  filterTree,
+  TreeNode,
+  twoPointerSort,
+} from "@lib/utils";
 import Location from "@models/Location";
 import { AssetTreeView } from "./components/AssetTreeView";
 import { DisplayComponent } from "./components/DisplayComponent";
@@ -26,6 +32,7 @@ interface ContentProps {
 
 export function Content({ company }: Readonly<ContentProps>) {
   const [selectedCompany, setSelectedCompany] = useState<TreeNode | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { data: locations, status: getLocationsStatus } = useQuery({
     queryKey: ["locations", company.id],
     queryFn: () => getCompanyLocations(company.id),
@@ -72,6 +79,25 @@ export function Content({ company }: Readonly<ContentProps>) {
     });
   }, [locations, assets]);
 
+  const filteredTree = useMemo(() => {
+    if (!assetTree?.length) return assetTree;
+
+    const sensorType = searchParams.get("sensorType");
+    const status = searchParams.get("status");
+    const name = searchParams.get("name");
+
+    if (!sensorType && !status && !name) return assetTree;
+
+    // iterar sobre a árvore e filtrar os nós
+    return assetTree
+      .map((node) => filterTree(node, sensorType, status, name))
+      .filter((node) => node !== null) as AssetTree;
+  }, [assetTree, searchParams]);
+
+  useEffect(() => {
+    console.info("Filtered tree", filteredTree);
+  }, [filteredTree]);
+
   const handleNodeClick = useCallback((node: TreeNode) => {
     if (node.get("sensorType")) {
       return setSelectedCompany((prev) => {
@@ -80,6 +106,25 @@ export function Content({ company }: Readonly<ContentProps>) {
       });
     }
   }, []);
+
+  const setNameSearchParam = useCallback(() => {
+    const inputValue = inputRef.current?.value;
+    const currentName = searchParams.get("name");
+
+    if (inputValue === currentName) return;
+
+    setSearchParams((params) => {
+      const newParams = new URLSearchParams(params);
+
+      if (!inputValue) {
+        newParams.delete("name");
+        return newParams;
+      }
+
+      newParams.set("name", inputValue);
+      return newParams;
+    });
+  }, [searchParams, setSearchParams]);
 
   if (!company.id) {
     return (
@@ -177,9 +222,14 @@ export function Content({ company }: Readonly<ContentProps>) {
       </header>
       <div className="flex items-center flex-1 gap-2">
         <div className="border border-gray-light rounded-sm flex-1 h-full">
-          <Searchbar placeholder="Buscar Ativo ou Local" onChange={() => {}} />
+          <Searchbar
+            placeholder="Buscar Ativo ou Local"
+            onChange={() => {}}
+            submitFn={setNameSearchParam}
+            inputRef={inputRef}
+          />
           <AssetTreeView
-            tree={assetTree}
+            tree={filteredTree}
             onNodeClick={handleNodeClick}
             selectedComponentId={selectedCompany?.get("id") as string}
           />

@@ -4,12 +4,14 @@ interface SearchbarProps {
   placeholder: string;
   onChange: (search: string) => void;
   submitFn?: () => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
 }
 
 export function Searchbar({
   placeholder,
   onChange,
   submitFn,
+  inputRef,
 }: Readonly<SearchbarProps>) {
   return (
     <div className="border border-gray-light rounded-sm flex items-center py-2 pr-3">
@@ -23,6 +25,7 @@ export function Searchbar({
             submitFn();
           }
         }}
+        ref={inputRef}
       />
       <button className="outline-none" onClick={submitFn}>
         <SearchIcon />

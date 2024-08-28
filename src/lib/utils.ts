@@ -101,3 +101,38 @@ export function flattenTree(
 
   return flatList;
 }
+
+export const filterTree = (
+  node: TreeNode,
+  sensorType: string | null,
+  status: string | null,
+  name: string | null
+): TreeNode | null => {
+  // Filtrar os filhos recursivamente
+  const children = (node.get("children") as AssetTree)
+    .map((childNode) => filterTree(childNode, sensorType, status, name))
+    .filter((childNode) => childNode !== null);
+
+  // Verifica se o nó atual deve ser mantido
+  const nodeSensorType = node.get("sensorType") ?? null;
+  const nodeStatus = node.get("status") ?? null;
+  const nodeName = node.get("name") as string;
+
+  const sameName = name
+    ? nodeName.toLowerCase().includes(name.toLowerCase())
+    : true;
+  const sameSensorType = sensorType ? nodeSensorType === sensorType : true;
+  const sameStatus = status ? nodeStatus === status : true;
+
+  const shouldKeep =
+    (sameName && sameSensorType && sameStatus) || children.length > 0;
+
+  if (shouldKeep) {
+    // Cria um novo nó com os filhos filtrados
+    const newNode = new Map(node);
+    newNode.set("children", children);
+    return newNode;
+  }
+
+  return null;
+};
