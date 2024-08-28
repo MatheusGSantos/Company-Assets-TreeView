@@ -15,6 +15,7 @@ import { useCallback, useMemo, useState } from "react";
 import { buildTree, TreeNode, twoPointerSort } from "@lib/utils";
 import Location from "@models/Location";
 import { AssetTreeView } from "./components/AssetTreeView";
+import { DisplayComponent } from "./components/DisplayComponent";
 
 interface ContentProps {
   company: {
@@ -184,10 +185,14 @@ export function Content({ company }: Readonly<ContentProps>) {
           />
         </div>
         <div className="border border-gray-light rounded-sm flex-[2] h-full">
-          <EmptyContent
-            message="Selecione um Ativo para visualizar mais detalhes"
-            svgClassName="fill-gray-medium h-20 w-20"
-          />
+          {selectedCompany ? (
+            <DisplayComponent data={selectedCompany} />
+          ) : (
+            <EmptyContent
+              message="Selecione um Ativo para visualizar mais detalhes"
+              svgClassName="fill-gray-medium h-20 w-20"
+            />
+          )}
         </div>
       </div>
     </>
