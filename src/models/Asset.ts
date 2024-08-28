@@ -2,7 +2,7 @@ type Asset = {
   id: string;
   name: string;
   locationId: string;
-  parentId: number | null;
+  parentId: string | null;
   sensorType: string | null;
   status: string | null;
 };

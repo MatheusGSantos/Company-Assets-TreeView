@@ -11,6 +11,10 @@ import { useSearchParams } from "react-router-dom";
 import { Searchbar } from "./components/Searchbar";
 import { twMerge } from "tailwind-merge";
 import { EmptyContent } from "@pages/EmptyContent";
+import { useMemo } from "react";
+import { buildTree, twoPointerSort } from "@lib/utils";
+import Location from "@models/Location";
+import { TreeNode } from "@components/TreeView";
 
 interface ContentProps {
   company: {
@@ -35,6 +39,35 @@ export function Content({ company }: Readonly<ContentProps>) {
   });
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const assetTree = useMemo(() => {
+    if (!locations || !assets) return [];
+    // sort locations so the nodes without parents are at the top
+    const sortedLocations = twoPointerSort(
+      locations || [],
+      (a: Location, b: Location) => {
+        if (b.parentId === null && a.parentId !== null) {
+          return 1;
+        }
+
+        return 0;
+      }
+    );
+    // sort assets so the nodes without parents come first
+    const sortedAssets = twoPointerSort(
+      assets || [],
+      (a: Location, b: Location) => {
+        if (b.parentId === null && a.parentId !== null) {
+          return 1;
+        }
+
+        return 0;
+      }
+    );
+    return buildTree({
+      data: [...sortedLocations, ...sortedAssets],
+    });
+  }, [locations, assets]);
 
   if (!company.id) {
     return (
@@ -133,6 +166,7 @@ export function Content({ company }: Readonly<ContentProps>) {
       <div className="flex items-center flex-1 gap-2">
         <div className="border border-gray-light rounded-sm flex-1 h-full">
           <Searchbar placeholder="Buscar Ativo ou Local" onChange={() => {}} />
+          <TreeNode node={{ id: "43" }} onNodeClick={() => {}} />
         </div>
         <div className="border border-gray-light rounded-sm flex-[2] h-full">
           <EmptyContent
