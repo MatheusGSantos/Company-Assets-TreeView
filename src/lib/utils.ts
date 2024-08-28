@@ -1,7 +1,10 @@
 import Asset from "@models/Asset";
 import Location from "@models/Location";
 
-export type TreeNode = Map<string, string | null | Array<TreeNode> | boolean>;
+export type TreeNode = Map<
+  string,
+  string | null | Array<TreeNode> | boolean | number
+>;
 
 export type AssetTree = Array<TreeNode>;
 
@@ -19,27 +22,20 @@ function buildNode(node: Location | Asset): TreeNode {
 function insertNode(tree: AssetTree, node: Location | Asset) {
   for (const parentNode of tree) {
     const parentId = parentNode.get("id");
+    const parentNodeChildren = parentNode.get("children") as AssetTree;
 
     if (
       parentId === node.parentId ||
       ("locationId" in node && parentId === node.locationId)
     ) {
       const newNode = buildNode(node);
-
-      if (!parentNode.get("children")) {
-        parentNode.set("children", [newNode]);
-      } else {
-        const children = parentNode.get("children") as AssetTree;
-        children.push(newNode);
-      }
+      parentNodeChildren.push(newNode);
 
       return; // Exit the function after inserting the node
     }
 
-    const children = parentNode.get("children") as AssetTree;
-
-    if (children.length > 0) {
-      insertNode(children, node);
+    if (parentNodeChildren.length > 0) {
+      insertNode(parentNodeChildren, node);
     }
   }
 }
@@ -79,4 +75,29 @@ export function twoPointerSort<T>(
   }
 
   return newArray; // Return the sorted copy
+}
+
+export function flattenTree(
+  nodes: AssetTree,
+  level = 0,
+  expandedIds = new Set()
+) {
+  let flatList = [] as AssetTree;
+
+  nodes.forEach((node) => {
+    const flatNode = new Map([...node.entries()]);
+    flatNode.set("level", level);
+    flatNode.set("isExpanded", expandedIds.has(node.get("id") as string));
+
+    flatList.push(flatNode);
+
+    const children = node.get("children") as AssetTree;
+    const isExpanded = expandedIds.has(node.get("id") as string);
+
+    if (children && isExpanded) {
+      flatList = flatList.concat(flattenTree(children, level + 1, expandedIds));
+    }
+  });
+
+  return flatList;
 }

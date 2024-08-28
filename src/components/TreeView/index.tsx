@@ -1,41 +1,16 @@
-import { PureComponent, useCallback, useState } from "react";
-import { AutoSizer, List, ListProps, ListRowRenderer } from "react-virtualized";
-import ArrowDown from "@assets/icons/ArrowDown.svg";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { AutoSizer, List, ListRowRenderer } from "react-virtualized";
 import "react-virtualized/styles.css";
-import { twMerge } from "tailwind-merge";
 
-interface TreeViewProps<T> extends PureComponent<ListProps> {
-  flattenedTree: T[];
+interface TreeViewProps {
+  flattenedTree: Map<string, any>[];
   rowRenderer: ListRowRenderer;
 }
 
-interface TreeNodeProps<T> {
-  onNodeClick: (node: T) => void;
-  node: T;
-}
-
-export function TreeNode<T>({ node, onNodeClick }: Readonly<TreeNodeProps<T>>) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleNodeClick = useCallback(() => {
-    if (onNodeClick) onNodeClick(node);
-    setIsOpen((prev) => !prev);
-  }, [node, onNodeClick]);
-
-  return (
-    <button className="w-full h-7" onClick={handleNodeClick} tabIndex={0}>
-      <span>
-        <ArrowDown className={twMerge("transform", !isOpen && "-rotate-90")} />
-      </span>
-    </button>
-  );
-}
-
-export function TreeView<T>({
+export function TreeView({
   flattenedTree,
   rowRenderer,
-  ...props
-}: Readonly<TreeViewProps<T>>) {
+}: Readonly<TreeViewProps>) {
   return (
     <AutoSizer>
       {({ height, width }) => (
@@ -46,7 +21,6 @@ export function TreeView<T>({
           rowRenderer={rowRenderer}
           width={width}
           className="px-1 py-2"
-          {...props}
         />
       )}
     </AutoSizer>

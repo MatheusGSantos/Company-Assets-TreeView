@@ -10,3 +10,21 @@
     @apply fill-white;
   }
 }
+
+@layer components {
+  .bolt-icon path {
+    @apply fill-green-primary;
+  }
+  .bolt-icon.critical path {
+    @apply fill-red-primary;
+  }
+}
+
+@layer components {
+  .ellipse circle {
+    @apply fill-green-primary;
+  }
+  .ellipse.critical circle {
+    @apply fill-red-primary;
+  }
+}

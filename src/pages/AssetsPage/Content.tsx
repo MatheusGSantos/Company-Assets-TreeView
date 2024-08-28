@@ -11,10 +11,10 @@ import { useSearchParams } from "react-router-dom";
 import { Searchbar } from "./components/Searchbar";
 import { twMerge } from "tailwind-merge";
 import { EmptyContent } from "@pages/EmptyContent";
-import { useMemo } from "react";
-import { buildTree, twoPointerSort } from "@lib/utils";
+import { useCallback, useMemo, useState } from "react";
+import { buildTree, TreeNode, twoPointerSort } from "@lib/utils";
 import Location from "@models/Location";
-import { TreeNode } from "@components/TreeView";
+import { AssetTreeView } from "./components/AssetTreeView";
 
 interface ContentProps {
   company: {
@@ -24,6 +24,7 @@ interface ContentProps {
 }
 
 export function Content({ company }: Readonly<ContentProps>) {
+  const [selectedCompany, setSelectedCompany] = useState<TreeNode | null>(null);
   const { data: locations, status: getLocationsStatus } = useQuery({
     queryKey: ["locations", company.id],
     queryFn: () => getCompanyLocations(company.id),
@@ -64,10 +65,20 @@ export function Content({ company }: Readonly<ContentProps>) {
         return 0;
       }
     );
+
     return buildTree({
       data: [...sortedLocations, ...sortedAssets],
     });
   }, [locations, assets]);
+
+  const handleNodeClick = useCallback((node: TreeNode) => {
+    if (node.get("sensorType")) {
+      return setSelectedCompany((prev) => {
+        if (prev?.get("id") === node.get("id")) return null;
+        return node;
+      });
+    }
+  }, []);
 
   if (!company.id) {
     return (
@@ -166,7 +177,11 @@ export function Content({ company }: Readonly<ContentProps>) {
       <div className="flex items-center flex-1 gap-2">
         <div className="border border-gray-light rounded-sm flex-1 h-full">
           <Searchbar placeholder="Buscar Ativo ou Local" onChange={() => {}} />
-          <TreeNode node={{ id: "43" }} onNodeClick={() => {}} />
+          <AssetTreeView
+            tree={assetTree}
+            onNodeClick={handleNodeClick}
+            selectedComponentId={selectedCompany?.get("id") as string}
+          />
         </div>
         <div className="border border-gray-light rounded-sm flex-[2] h-full">
           <EmptyContent
