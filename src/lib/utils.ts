@@ -12,47 +12,79 @@ interface BuildTreeParams {
   data: Array<Location | Asset>;
 }
 
-function buildNode(node: Location | Asset): TreeNode {
-  const newNode = new Map(Object.entries(node)) as TreeNode;
-  newNode.set("children", [] as AssetTree);
+export class AssetTreeBuilder {
+  outputTree: AssetTree = [];
 
-  return newNode;
-}
+  private buildNode(node: Location | Asset): TreeNode {
+    const newNode: TreeNode = new Map(Object.entries(node));
 
-function insertNode(tree: AssetTree, node: Location | Asset) {
-  for (const parentNode of tree) {
-    const parentId = parentNode.get("id");
-    const parentNodeChildren = parentNode.get("children") as AssetTree;
+    newNode.set("children", [] as AssetTree);
 
-    if (
-      parentId === node.parentId ||
-      ("locationId" in node && parentId === node.locationId)
-    ) {
-      const newNode = buildNode(node);
-      parentNodeChildren.push(newNode);
-
-      return; // Exit the function after inserting the node
-    }
-
-    if (parentNodeChildren.length > 0) {
-      insertNode(parentNodeChildren, node);
-    }
+    return newNode;
   }
-}
 
-export function buildTree({ data }: BuildTreeParams) {
-  const assetTree: AssetTree = [];
+  private insertNode(tree: AssetTree, node: Location | Asset) {
+    for (const parentNode of tree) {
+      const parentId = parentNode.get("id");
+      const parentNodeChildren = parentNode.get("children") as AssetTree;
 
-  data.forEach((node) => {
-    if (node.parentId || ("locationId" in node && node.locationId)) {
-      insertNode(assetTree, node);
-    } else {
-      const newNode = buildNode(node);
-      assetTree.push(newNode);
+      if (
+        parentId === node.parentId ||
+        ("locationId" in node && parentId === node.locationId)
+      ) {
+        const newNode = this.buildNode(node);
+        parentNodeChildren.push(newNode);
+
+        return true; // Exit the function after inserting the node
+      }
+
+      if (parentNodeChildren.length > 0) {
+        this.insertNode(parentNodeChildren, node);
+      }
     }
-  });
 
-  return assetTree;
+    return false; // Node was not inserted
+  }
+
+  public buildTree({ data }: BuildTreeParams) {
+    const assetTree: AssetTree = [];
+
+    // let index = 0
+
+    // while (index < data.length) {
+    //   const node = data[index]
+
+    //   if (node.parentId || ("locationId" in node && node.locationId)) {
+    //     const wasInserted = insertNode(assetTree, node);
+
+    //     if (!wasInserted) {
+    //       const newNode = buildNode(node);
+    //       assetTree.push(newNode);
+    //     }
+    //   } else {
+    //     const newNode = buildNode(node);
+    //     assetTree.push(newNode);
+    //   }
+
+    //   index++
+    // }
+
+    data.forEach((node) => {
+      if (node.parentId || ("locationId" in node && node.locationId)) {
+        this.insertNode(assetTree, node);
+        // const wasInserted = insertNode(assetTree, node);
+
+        // if (!wasInserted) {
+        //   // push to the end of the array
+        // }
+      } else {
+        const newNode = this.buildNode(node);
+        assetTree.push(newNode);
+      }
+    });
+
+    return assetTree;
+  }
 }
 
 export function twoPointerSort<T>(
