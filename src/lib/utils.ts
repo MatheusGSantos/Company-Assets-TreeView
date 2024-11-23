@@ -14,6 +14,7 @@ interface BuildTreeParams {
 
 export class AssetTreeBuilder {
   outputTree: AssetTree = [];
+  nodeOrphanage = new Map<string, Array<TreeNode>>()
 
   private buildNode(node: Location | Asset): TreeNode {
     const newNode: TreeNode = new Map(Object.entries(node));
@@ -23,6 +24,44 @@ export class AssetTreeBuilder {
     return newNode;
   }
 
+  private findAndAdoptChildren(node: TreeNode) {
+    const id = node.get("id") as string
+    const orphanChildren = this.nodeOrphanage.get(id)
+
+    if (orphanChildren?.length) {
+      for (const child of orphanChildren) {
+        const currentNodeChildren = node.get("children") as AssetTree
+        currentNodeChildren.push(child)
+
+        // recursive call to every child to build the subtree
+        this.findAndAdoptChildren(child)
+      }
+
+      // unregister parent from orphanage, as it will be inserted in the tree
+      this.nodeOrphanage.delete(id)
+    }
+  }
+
+  /**
+   * TODO: refactor to this:
+   *  para cada elemento em data
+   *  1. se o pai é nulo, insere
+      2. se não é nulo:
+        2.2 vê se o pai está na estrutura auxiliar
+          2.2.1 se estiver, adiciona no array valor do pai e retorna
+          2.2.2 se não estiver, tenta inserir
+            2.2.2.1 caso não consiga, adiciona o pai na estrutura com valor [ elemAtual ] e vai para o próximo
+            2.2.2.2 caso ache seu pai já inserido na árvore:
+              1. criar nó para o elemento, com filhos vazios []
+              2. executar algoritmo recursivo funçãoRecursiva(nóPai):
+                1.1 ver se o ID está presente na estrutura auxiliar
+                1.2 se não estiver retorna 
+                1.3 se estiver:
+                  - childNodes = aux[node.id].map(buildNode)
+                  - currentNode['children'] = childNodes.map(funçãoRecursiva)
+                  - remove a key node.id do auxiliar
+              3. insere o nó como filho do nó pai
+  */
   private insertNode(tree: AssetTree, node: Location | Asset) {
     for (const parentNode of tree) {
       const parentId = parentNode.get("id");
@@ -34,6 +73,8 @@ export class AssetTreeBuilder {
       ) {
         const newNode = this.buildNode(node);
         parentNodeChildren.push(newNode);
+
+        this.findAndAdoptChildren(newNode)
 
         return true; // Exit the function after inserting the node
       }
@@ -47,43 +88,30 @@ export class AssetTreeBuilder {
   }
 
   public buildTree({ data }: BuildTreeParams) {
-    const assetTree: AssetTree = [];
+    for (const node of data) {
+      const parentId = node.parentId ?? "locationId" in node ? (node as Asset).locationId : null
 
-    // let index = 0
+      if (parentId) {
+        // check if parent is registered in orphanage
+        const orphanChildren = this.nodeOrphanage.get(parentId)
 
-    // while (index < data.length) {
-    //   const node = data[index]
+        if (orphanChildren) {
+          orphanChildren.push(this.buildNode(node))
+          continue
+        }
 
-    //   if (node.parentId || ("locationId" in node && node.locationId)) {
-    //     const wasInserted = insertNode(assetTree, node);
+        // attempt node insertion
+        const wasInserted = this.insertNode(this.outputTree, node);
 
-    //     if (!wasInserted) {
-    //       const newNode = buildNode(node);
-    //       assetTree.push(newNode);
-    //     }
-    //   } else {
-    //     const newNode = buildNode(node);
-    //     assetTree.push(newNode);
-    //   }
-
-    //   index++
-    // }
-
-    data.forEach((node) => {
-      if (node.parentId || ("locationId" in node && node.locationId)) {
-        this.insertNode(assetTree, node);
-        // const wasInserted = insertNode(assetTree, node);
-
-        // if (!wasInserted) {
-        //   // push to the end of the array
-        // }
+        if (!wasInserted) {
+          // register parent in the orphanage
+          this.nodeOrphanage.set(parentId, [ this.buildNode(node) ])
+        }
       } else {
         const newNode = this.buildNode(node);
-        assetTree.push(newNode);
+        this.outputTree.push(newNode);
       }
-    });
-
-    return assetTree;
+    }
   }
 }
 

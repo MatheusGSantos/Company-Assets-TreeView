@@ -14,12 +14,10 @@ import { EmptyContent } from "@pages/EmptyContent";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AssetTree,
-  buildTree,
+  AssetTreeBuilder,
   filterTree,
   TreeNode,
-  twoPointerSort,
 } from "@lib/utils";
-import Location from "@models/Location";
 import { AssetTreeView } from "./components/AssetTreeView";
 import { DisplayComponent } from "./components/DisplayComponent";
 
@@ -51,32 +49,13 @@ export function Content({ company }: Readonly<ContentProps>) {
 
   const assetTree = useMemo(() => {
     if (!locations || !assets) return [];
-    // sort locations so the nodes without parents are at the top
-    const sortedLocations = twoPointerSort(
-      locations || [],
-      (a: Location, b: Location) => {
-        if (b.parentId === null && a.parentId !== null) {
-          return 1;
-        }
 
-        return 0;
-      }
-    );
-    // sort assets so the nodes without parents come first
-    const sortedAssets = twoPointerSort(
-      assets || [],
-      (a: Location, b: Location) => {
-        if (b.parentId === null && a.parentId !== null) {
-          return 1;
-        }
-
-        return 0;
-      }
-    );
-
-    return buildTree({
-      data: [...sortedLocations, ...sortedAssets],
+    const assetTreeBuilder = new AssetTreeBuilder()
+    assetTreeBuilder.buildTree({
+      data: [...locations, ...assets],
     });
+
+    return assetTreeBuilder.outputTree
   }, [locations, assets]);
 
   const filteredTree = useMemo(() => {
