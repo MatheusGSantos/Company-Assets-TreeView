@@ -9,7 +9,7 @@ export async function getCompanyAssets(companyId: string | null) {
   }
 
   const response = await api.get<GetCompanyAssetsResponse>(
-    `/assets/${companyId}`
+    `/assets?companyId=${companyId}`
   );
 
   return response.data;

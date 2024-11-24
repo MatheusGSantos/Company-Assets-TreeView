@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "run-api": "json-server fake-api.json"
+    "api": "json-server fake-db.json -p 9999"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.52.1",

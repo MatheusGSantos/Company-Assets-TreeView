@@ -11,7 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import { Searchbar } from "./components/Searchbar";
 import { twMerge } from "tailwind-merge";
 import { EmptyContent } from "@pages/EmptyContent";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   AssetTree,
   AssetTreeBuilder,
@@ -72,10 +72,6 @@ export function Content({ company }: Readonly<ContentProps>) {
       .map((node) => filterTree(node, sensorType, status, name))
       .filter((node) => node !== null) as AssetTree;
   }, [assetTree, searchParams]);
-
-  useEffect(() => {
-    console.info("Filtered tree", filteredTree);
-  }, [filteredTree]);
 
   const handleNodeClick = useCallback((node: TreeNode) => {
     if (node.get("sensorType")) {

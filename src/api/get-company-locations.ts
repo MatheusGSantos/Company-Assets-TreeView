@@ -9,7 +9,7 @@ export async function getCompanyLocations(companyId: string | null) {
   }
 
   const response = await api.get<GetCompanyLocationsResponse>(
-    `/locations/${companyId}`
+    `/locations?companyId=${companyId}`
   );
 
   return response.data;
