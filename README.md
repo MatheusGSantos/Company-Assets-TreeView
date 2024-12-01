@@ -1,5 +1,10 @@
 # Company Assets TreeView
 
+<p align="center">
+<img loading="lazy" src="https://img.shields.io/badge/node-22.11.0-blue?style=for-the-badge&logo=nodedotjs&logoColor=%235FA04E"/> <img loading="lazy" src="https://img.shields.io/badge/typescript-5.5.3-blue?style=for-the-badge&logo=typescript&logoColor=%233178C6"/> <img loading="lazy" src="https://img.shields.io/badge/react-18.3.1-blue?style=for-the-badge&logo=react&logoColor=%2361DAFB"/> <img loading="lazy" src="https://img.shields.io/badge/tailwind-3.4.10-blue?style=for-the-badge&logo=tailwindcss&logoColor=%2306B6D4"/> <img loading="lazy" src="https://img.shields.io/badge/vite-5.4.1-blue?style=for-the-badge&logo=vite&logoColor=%23646CFF"/>
+</p>
+
+
 This is a React-based application for visualizing and managing hierarchical data 
 such as company assets and locations. This project demonstrates efficient tree 
 structure rendering and filtering functionality with a focus on clean 
@@ -10,6 +15,21 @@ an API should be consumed by the frontend and display locations, assets and
  components from available companies in a treeview. Requirements included: no 
  UI components library should be used and the user should be able to filter
  the tree nodes based on certain aspects.
+
+## The Problem
+A user wants to inspect their company assets and check for possible mechanical
+ and electrical failures in machine components. Each component is monitored by a
+ sensor that uploads real time data to a server that analyzes the machine 
+ vibrations to determine if the component is healthy or about to fail.
+
+A company may or may not have locations. A location can have sublocations (if the location is too
+ big, the company may choose to split in multiple sectors). The assets of a 
+ company may or may not be associated with a location (or sublocation). 
+ Components may or may not be associated with a location (or sublocation) or an
+ asset.
+There should be a way visualize this in a treeview, being able to display 
+components current details, if a component node is selected. Also the user has
+to be able to filter the TreeView by name, sensor type and status.
 
 ## Features
 
@@ -57,17 +77,3 @@ pnpm run dev
 - TailwindCSS
 - Vite
 
-## The Problem
-A user wants to inspect their company assets and check for possible mechanical
- and electrical failures in machine components. Each component is monitored by a
- sensor that uploads real time data to a server that analyzes the machine 
- vibrations to determine if the component is healthy or about to fail.
-
-A company may or may not have locations. A location can have sublocations (if the location is too
- big, the company may choose to split in multiple sectors). The assets of a 
- company may or may not be associated with a location (or sublocation). 
- Components may or may not be associated with a location (or sublocation) or an
- asset.
-There should be a way visualize this in a treeview, being able to display 
-components current details, if a component node is selected. Also the user has
-to be able to filter the TreeView by name, sensor type and status.
