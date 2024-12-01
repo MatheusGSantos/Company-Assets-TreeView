@@ -52,3 +52,17 @@ pnpm run dev
 - TailwindCSS
 - Vite
 
+## The Problem
+A user wants to inspect their company assets and check for possible mechanical
+ and electrical failures in machine components. Each component is monitored by a
+ sensor that uploads real time data to a server that analyzes the machine 
+ vibrations to determine if the component is healthy or about to fail.
+ 
+A company may or may not have locations. A location can have sublocations (if the location is too
+ big, the company may choose to split in multiple sectors). The assets of a 
+ company may or may not be associated with a location (or sublocation). 
+ Components may or may not be associated with a location (or sublocation) or an
+ asset.
+There should be a way visualize this in a treeview, being able to display 
+components current details, if a component node is selected. Also the user has
+to be able to filter the treeview by name, sensor type and status.
