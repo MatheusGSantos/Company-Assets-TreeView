@@ -88,7 +88,7 @@ should be inserted, but its parent is not yet part of the treeview. For that, I
 opted for using a Map data structure to keep the reference of parent nodes that 
 are not yet in the treeview and their child nodes.
 
-For abstraction purposes, I call this auxiliary data structure 'the Orphanage", to
+For abstraction purposes, I call this auxiliary data structure "the Orphanage", to
 represent the relation of child nodes and the parent nodes that are supposed to 
 adopt them as they are inserted in the treeview.
 
