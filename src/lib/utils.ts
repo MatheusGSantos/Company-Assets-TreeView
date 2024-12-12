@@ -42,26 +42,6 @@ export class AssetTreeBuilder {
     }
   }
 
-  /**
-   * TODO: refactor to this:
-   *  para cada elemento em data
-   *  1. se o pai é nulo, insere
-      2. se não é nulo:
-        2.2 vê se o pai está na estrutura auxiliar
-          2.2.1 se estiver, adiciona no array valor do pai e retorna
-          2.2.2 se não estiver, tenta inserir
-            2.2.2.1 caso não consiga, adiciona o pai na estrutura com valor [ elemAtual ] e vai para o próximo
-            2.2.2.2 caso ache seu pai já inserido na árvore:
-              1. criar nó para o elemento, com filhos vazios []
-              2. executar algoritmo recursivo funçãoRecursiva(nóPai):
-                1.1 ver se o ID está presente na estrutura auxiliar
-                1.2 se não estiver retorna 
-                1.3 se estiver:
-                  - childNodes = aux[node.id].map(buildNode)
-                  - currentNode['children'] = childNodes.map(funçãoRecursiva)
-                  - remove a key node.id do auxiliar
-              3. insere o nó como filho do nó pai
-  */
   private insertNode(tree: AssetTree, node: Location | Asset) {
     for (const parentNode of tree) {
       const parentId = parentNode.get("id");
@@ -105,7 +85,7 @@ export class AssetTreeBuilder {
 
         if (!wasInserted) {
           // register parent in the orphanage
-          this.nodeOrphanage.set(parentId, [ this.buildNode(node) ])
+          this.nodeOrphanage.set(parentId, [this.buildNode(node)])
         }
       } else {
         const newNode = this.buildNode(node);

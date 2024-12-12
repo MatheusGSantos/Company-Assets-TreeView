@@ -22,13 +22,14 @@ A user wants to inspect their company assets and check for possible mechanical
  sensor that uploads real time data to a server that analyzes the machine 
  vibrations to determine if the component is healthy or about to fail.
 
-A company may or may not have locations. A location can have sublocations (if the location is too
- big, the company may choose to split in multiple sectors). The assets of a 
- company may or may not be associated with a location (or sublocation). 
- Components may or may not be associated with a location (or sublocation) or an
- asset.
+A company may or may not have locations. A location can have sublocations 
+(if the location is too big, the company may choose to split in multiple 
+sectors). The assets of a company may or may not be associated with a location 
+(or sublocation). Components may or may not be associated with a location 
+(or sublocation) or an asset.
+
 There should be a way visualize this in a treeview, being able to display 
-components current details, if a component node is selected. Also the user has
+a component current state, if a component node is selected. Also the user has
 to be able to filter the TreeView by name, sensor type and status.
 
 ## Features
@@ -77,3 +78,20 @@ pnpm run dev
 - TailwindCSS
 - Vite
 
+## TreeView Building Algorithm
+Since the data is all cluttered up, we need a way to handle the case when a node
+should be inserted, but its parent is not yet part of the treeview. For that, I
+opted for using a Map data structure to keep the reference of parent nodes that 
+are not yet in the treeview and their child nodes.
+
+For abstraction purposes, I call this auxiliary data structure 'the Orphanage", to
+represent the relation of child nodes and the parent nodes that are supposed to 
+adopt them as they are inserted in the treeview.
+
+When a node is successfully inserted, every child registered in the Orphanage is
+"adopted", now repeating the operation recursively for each child, forming the
+subtree of the recently inserted node.
+
+Here's a visual representation of the algorithm:
+
+![Treeview Algorithm Visualization](/github/treeview-algo-visualization.gif)
